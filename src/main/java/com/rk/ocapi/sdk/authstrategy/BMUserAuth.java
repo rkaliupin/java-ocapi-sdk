@@ -44,6 +44,14 @@ public class BMUserAuth implements AuthStrategy {
     }
 
     /**
+     * Get value of the bmAuthToken attr
+     * @return {String} bmAuthToken
+     */
+    public String getBmAuthToken() {
+        return this.bmAuthToken;
+    }
+
+    /**
      * Apply Auth Strategy to the request (request builder)
      */
     private void performAuthentication() {
@@ -73,6 +81,10 @@ public class BMUserAuth implements AuthStrategy {
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             String responseBody = response.body();
+
+            if (response.statusCode() != 200) {
+                throw new RuntimeException("Bad Request: " + responseBody);
+            }
 
             // Parse response body
             JsonElement jsonElement = JsonParser.parseString(responseBody);

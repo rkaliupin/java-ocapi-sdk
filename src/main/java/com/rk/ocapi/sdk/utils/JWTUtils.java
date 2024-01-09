@@ -14,7 +14,6 @@ public class JWTUtils {
 
             // Get the expiration time
             java.util.Date expirationTime = claimsSet.getExpirationTime();
-            System.out.println("Expiration Time: " + expirationTime);
 
             // Check if the token has expired
             if (expirationTime != null && expirationTime.before(new java.util.Date())) {
