@@ -15,6 +15,5 @@ public class DataApiAuth implements AuthStrategy {
      */
     @Override
     public void applyAuthentication(HttpRequest.Builder requestBuilder) {
-
     }
 }

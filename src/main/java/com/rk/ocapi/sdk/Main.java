@@ -14,7 +14,6 @@ public class Main {
         // to see how IntelliJ IDEA suggests fixing it.
         // Get the JWT parser
 
-
         // EnvReader.getProperty("OCAPI_CLIENT_ID")
         // String host, String clientId, String clientTokenPass, String bmUserEmail, String bmApiKey
         BMUserAuth bmUserAuth = new BMUserAuth(
@@ -52,6 +51,5 @@ public class Main {
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
-
     }
 }
