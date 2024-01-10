@@ -1,6 +1,6 @@
 package com.rk.ocapi.sdk.authstrategy;
 
-import java.net.HttpURLConnection;
+import java.net.http.HttpRequest;
 
 /**
  * Perform OCAPI Data API auth strategy
@@ -11,10 +11,9 @@ public class DataApiAuth implements AuthStrategy {
     }
     /**
      * Apply auth strategy to the HttpURLConnection
-     * @param connection
+     * @param requestBuilder
      */
     @Override
-    public void applyAuthentication(HttpURLConnection connection) {
-
+    public void applyAuthentication(HttpRequest.Builder requestBuilder) {
     }
 }
