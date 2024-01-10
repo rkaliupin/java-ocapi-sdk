@@ -4,7 +4,16 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import java.text.ParseException;
+
+/**
+ * Utils for manipulations with JWT token
+ */
 public class JWTUtils {
+    /**
+     * Check whenever JWT token expired
+     * @param jwt JWT token
+     * @return {boolean} true in case if JWT expired
+     */
     public static boolean jwtTokenExpired(String jwt) {
         try {
             SignedJWT signedJWT = SignedJWT.parse(jwt);

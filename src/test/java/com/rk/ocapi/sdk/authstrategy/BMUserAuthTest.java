@@ -24,11 +24,12 @@ class BMUserAuthTest {
         HttpRequest.Builder request = HttpRequest.newBuilder();
         bmUserAuth.applyAuthentication(request);
 
-        String bmAuthToken = bmUserAuth.getBmAuthToken();
+        String bmAuthToken = bmUserAuth.getBmAuthToken()
+                .replace("Bearer ", "");
 
         // Check that returned token isn't empty
         Assertions.assertFalse(bmAuthToken.isEmpty());
-        Assertions.assertFalse(JWTUtils.jwtTokenExpired(bmAuthToken.replace("Bearer ", "")));
+        Assertions.assertFalse(JWTUtils.jwtTokenExpired(bmAuthToken));
     }
 
     @Test
