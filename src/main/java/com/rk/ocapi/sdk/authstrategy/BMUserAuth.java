@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rk.ocapi.sdk.utils.JWTUtils;
+import com.rk.ocapi.sdk.utils.OCAPIUrlConfig;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,17 +17,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BMUserAuth implements AuthStrategy {
-    private final String host;
-    private final String clientId;
+public class BMUserAuth implements AuthStrategy, OOCAuthStrategy {
+    private final OCAPIUrlConfig ocapiUrlConfig;
     private final String authHeader;
     private String bmAuthToken = "";
 
-    public BMUserAuth(String host, String clientId, String clientTokenPass, String bmUserEmail, String bmApiKey) {
-        this.host = host;
-        this.clientId = clientId;
+    public BMUserAuth(OCAPIUrlConfig ocapiUrlConfig, String bmUserEmail, String bmApiKey) {
+        this.ocapiUrlConfig = ocapiUrlConfig;
         this.authHeader = "Basic " + java.util.Base64.getEncoder().encodeToString(
-                (bmUserEmail + ":" + bmApiKey + ":" + clientTokenPass).getBytes()
+                (bmUserEmail + ":" + bmApiKey + ":" + ocapiUrlConfig.getClientPass()).getBytes()
         );
     }
 
@@ -47,7 +46,8 @@ public class BMUserAuth implements AuthStrategy {
      * Get value of the bmAuthToken attr
      * @return {String} bmAuthToken
      */
-    public String getBmAuthToken() {
+    @Override
+    public String getAuthToken() {
         return this.bmAuthToken;
     }
 
@@ -56,10 +56,10 @@ public class BMUserAuth implements AuthStrategy {
      */
     private void performAuthentication() {
         // If token didn't expire -> return the token
-        if (this.authTokenValid(this.bmAuthToken)) return;
+        if (!JWTUtils.jwtTokenExpired(this.bmAuthToken)) return;
 
         // Define URL
-        String url = "https://" + this.host + "/dw/oauth2/access_token?client_id=" + this.clientId;
+        String url = "https://" + ocapiUrlConfig.getHost() + "/dw/oauth2/access_token?client_id=" + ocapiUrlConfig.getClientId();
 
         // Build request body
         Map<String, String> jsonMap = new HashMap<>();
@@ -89,24 +89,12 @@ public class BMUserAuth implements AuthStrategy {
             // Parse response body
             JsonElement jsonElement = JsonParser.parseString(responseBody);
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            String accessToken = jsonObject.get("access_token").toString();
+            String accessToken = jsonObject.get("access_token").getAsString();
             //
 
             this.bmAuthToken = "Bearer " + accessToken;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Validate auth token
-     * @param authToken auth token to validate (static method potentially can be moved to the separate class)
-     * @return {boolean} true/false in case if the auth token is valid or not
-     */
-    private Boolean authTokenValid(String authToken) {
-        if (authToken.isEmpty()) return false;
-        if (JWTUtils.jwtTokenExpired(authToken)) return false;
-
-        return true;
     }
 }

@@ -15,6 +15,10 @@ public class JWTUtils {
      * @return {boolean} true in case if JWT expired
      */
     public static boolean jwtTokenExpired(String jwt) {
+        if (jwt == null || jwt.isEmpty()) return true;
+
+        jwt = jwt.contains("Bearer") ? jwt.replace("Bearer", "") : jwt;
+
         try {
             SignedJWT signedJWT = SignedJWT.parse(jwt);
 

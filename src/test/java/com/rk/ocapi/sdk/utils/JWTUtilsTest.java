@@ -15,10 +15,15 @@ class JWTUtilsTest {
     @DisplayName("Not expired JWT token")
     public void jwtTokenNotExpired() {
         // Generate JWT token
-        BMUserAuth bmUserAuth = new BMUserAuth(
+        OCAPIUrlConfig ocapiUrlConfig = new OCAPIUrlConfig(
                 EnvReader.getProperty("OCAPI_HOST"),
+                EnvReader.getProperty("OCAPI_VERSION"),
+                EnvReader.getProperty("OCAPI_SITE_ID"),
                 EnvReader.getProperty("OCAPI_CLIENT_ID"),
-                EnvReader.getProperty("OCAPI_CLIENT_PASS"),
+                EnvReader.getProperty("OCAPI_CLIENT_PASS")
+        );
+        BMUserAuth bmUserAuth = new BMUserAuth(
+                ocapiUrlConfig,
                 EnvReader.getProperty("BM_USER_EMAIL"),
                 EnvReader.getProperty("BM_API_KEY")
         );
@@ -26,7 +31,7 @@ class JWTUtilsTest {
         HttpRequest.Builder request = HttpRequest.newBuilder();
         bmUserAuth.applyAuthentication(request);
 
-        String bmAuthToken = bmUserAuth.getBmAuthToken()
+        String bmAuthToken = bmUserAuth.getAuthToken()
                 .replace("Bearer ", "");
         //
 

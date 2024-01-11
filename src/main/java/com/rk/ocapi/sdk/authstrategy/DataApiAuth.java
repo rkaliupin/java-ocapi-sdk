@@ -16,4 +16,14 @@ public class DataApiAuth implements AuthStrategy {
     @Override
     public void applyAuthentication(HttpRequest.Builder requestBuilder) {
     }
+
+    /**
+     * Return Auth token
+     *
+     * @return Auth token
+     */
+    @Override
+    public String getAuthToken() {
+        return null;
+    }
 }
