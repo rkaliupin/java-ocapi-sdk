@@ -3,7 +3,9 @@ package com.rk.ocapi.sdk;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.rk.ocapi.sdk.authstrategy.BMUserAuth;
+import com.rk.ocapi.sdk.authstrategy.OnBehalfOfCustomerAuth;
 import com.rk.ocapi.sdk.utils.EnvReader;
+import com.rk.ocapi.sdk.utils.OCAPIUrlConfig;
 
 import java.text.ParseException;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -14,15 +16,27 @@ public class Main {
         // to see how IntelliJ IDEA suggests fixing it.
         // Get the JWT parser
 
-        // EnvReader.getProperty("OCAPI_CLIENT_ID")
-        // String host, String clientId, String clientTokenPass, String bmUserEmail, String bmApiKey
-        BMUserAuth bmUserAuth = new BMUserAuth(
+        OCAPIUrlConfig ocapiUrlConfig = new OCAPIUrlConfig(
                 EnvReader.getProperty("OCAPI_HOST"),
+                EnvReader.getProperty("OCAPI_VERSION"),
+                EnvReader.getProperty("OCAPI_SITE_ID"),
                 EnvReader.getProperty("OCAPI_CLIENT_ID"),
-                EnvReader.getProperty("OCAPI_CLIENT_PASS"),
+                EnvReader.getProperty("OCAPI_CLIENT_PASS")
+        );
+        BMUserAuth bmUserAuth = new BMUserAuth(
+                ocapiUrlConfig,
                 EnvReader.getProperty("BM_USER_EMAIL"),
                 EnvReader.getProperty("BM_API_KEY")
         );
+
+        String customerId = EnvReader.getProperty("TEST_CUSTOMER_ID");
+        OnBehalfOfCustomerAuth onBehalfOfCustomerAuth = new OnBehalfOfCustomerAuth(
+                bmUserAuth,
+                ocapiUrlConfig,
+                customerId
+        );
+
+        System.out.println(onBehalfOfCustomerAuth.getAuthToken());
 
         // bmUserAuth.performAuthentication();
 
